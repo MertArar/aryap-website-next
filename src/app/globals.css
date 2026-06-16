@@ -1,0 +1,51 @@
+@font-face {
+  font-family: "Heretic W00 Black";
+  src: url("https://db.onlinewebfonts.com/t/ecd9c1fa8dbb2338b017932c61344252.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/ecd9c1fa8dbb2338b017932c61344252.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+:root {
+  --corparate-color: #0f2535;
+  --yan-renk: #1E4E6E;
+  --yan-renk2: #235B80;
+  --yan-renk3: #112334;
+  --secondary-bg: #FAFDFF;
+
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f1f6fc;
+  margin: 0;
+  padding: 0;
+}
+
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown 0.25s ease;
+}
