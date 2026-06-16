@@ -21,7 +21,6 @@ import {
 
 import AryapLogoWhite from "@/assets/AryapLogoBeyaz.png";
 import AryapLogoDark from "@/assets/AryapLogo.png";
-import AryapLogoIcon from "@/assets/AryapIcon.svg";
 
 const SCROLL_LIMIT = 45;
 
@@ -35,14 +34,10 @@ const NAV_ITEMS = [
   { label: "İletişim", path: "/contact" },
 ] as const;
 
-const LEFT_NAV_ITEMS = NAV_ITEMS.slice(0, 2);
-const RIGHT_NAV_ITEMS = NAV_ITEMS.slice(2);
-
 const LANGUAGES = ["TR", "EN", "FR", "RU"] as const;
 
 type NavLabel = (typeof NAV_ITEMS)[number]["label"];
 type Language = (typeof LANGUAGES)[number];
-type NavItem = (typeof NAV_ITEMS)[number];
 
 type DropdownItem = {
   label: string;
@@ -201,110 +196,22 @@ const Header = () => {
     ? "bg-[#0f2535]/5 group-hover:bg-[#0f2535]/10"
     : "bg-white/10 group-hover:bg-white/15";
 
-  const renderDesktopNavItem = (item: NavItem) => {
-    const dropdownItems = DROPDOWN_ITEMS[item.label];
-    const hasDropdown = Boolean(dropdownItems);
-
-    return (
-      <div
-        key={item.label}
-        className="group relative flex h-full items-center"
-      >
-        <Link
-          href={item.path}
-          className={`group/link relative flex cursor-pointer items-center gap-1.5 text-base font-medium tracking-[0.18em] transition-colors duration-300 ${headerTextColor}`}
-        >
-          {item.label}
-
-          {hasDropdown && (
-            <FiChevronDown className="text-sm transition-transform duration-300 group-hover:rotate-180" />
-          )}
-
-          <span
-            className={`absolute -bottom-2 left-0 h-[1px] w-0 transition-[width] duration-300 group-hover/link:w-full ${underlineColor}`}
-          />
-        </Link>
-
-        {hasDropdown && dropdownItems && (
-          <div className="invisible absolute left-1/2 top-[calc(100%-2px)] w-72 -translate-x-1/2 translate-y-4 scale-95 overflow-hidden rounded-3xl bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,37,53,0.16)] transition-[opacity,transform,visibility] duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
-            <div className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" />
-
-            <div className="relative z-10">
-              {dropdownItems.map((subItem) => (
-                <Link
-                  key={subItem.label}
-                  href={subItem.path}
-                  className="group/item flex cursor-pointer items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold tracking-[0.08em] text-[#0f2535]/65 transition-[background-color,color] duration-300 hover:bg-[#0f2535] hover:text-white"
-                >
-                  <span>{subItem.label}</span>
-                  <FiArrowUpRight className="text-base opacity-0 transition-[opacity,transform] duration-300 group-hover/item:translate-x-1 group-hover/item:-translate-y-1 group-hover/item:opacity-100" />
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const renderLanguageSelector = () => {
-    return (
-      <div className="flex items-center gap-7 pl-2">
-        <span
-          className={`h-5 w-px transition-colors duration-300 ${dividerColor}`}
-        />
-
-        <div className="group relative">
-          <button
-            type="button"
-            className={`flex cursor-pointer items-center gap-2 rounded-full px-1 py-2 text-sm font-semibold tracking-[0.18em] transition-colors duration-300 ${headerTextColor}`}
-            aria-label="Dil seçimi"
-          >
-            <FiGlobe className="text-lg" />
-            <span>{selectedLang}</span>
-            <FiChevronDown className="text-base transition-transform duration-300 group-hover:rotate-180" />
-          </button>
-
-          <div className="invisible absolute right-0 top-9 w-32 translate-y-3 overflow-hidden rounded-2xl bg-white py-2 opacity-0 shadow-[0_18px_50px_rgba(15,37,53,0.16)] transition-[opacity,transform,visibility] duration-300 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-            {LANGUAGES.map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => setSelectedLang(lang)}
-                className={`flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-sm font-semibold tracking-[0.16em] transition-colors duration-300 ${
-                  selectedLang === lang
-                    ? "text-[#0f2535]"
-                    : "text-[#0f2535]/45 hover:text-[#0f2535]"
-                }`}
-              >
-                <span>{lang}</span>
-                {selectedLang === lang && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#0f2535]" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <header
-      className={`fixed left-0 top-0 z-50 w-full transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
+      className={`fixed left-0 top-0 z-50 w-full transition-[background-color,box-shadow] duration-300 ${
         scrolled
-          ? "bg-transparent"
+          ? "bg-white shadow-[0_14px_45px_rgba(15,37,53,0.08)]"
           : "bg-transparent"
       }`}
     >
       <div
         className={`mx-auto flex max-w-7xl items-center justify-between px-5 transition-[height] duration-300 sm:px-8 lg:px-10 ${
-          scrolled ? "h-24" : "h-24"
+          scrolled ? "h-20" : "h-24"
         }`}
       >
         <Link
           href="/"
-          className="flex cursor-pointer items-center lg:hidden"
+          className="flex cursor-pointer items-center"
           aria-label="Anasayfaya git"
         >
           <Image
@@ -317,77 +224,93 @@ const Header = () => {
           />
         </Link>
 
-        {!scrolled && (
-          <div className="hidden w-full items-center justify-between lg:flex">
-            <Link
-              href="/"
-              className="flex cursor-pointer items-center"
-              aria-label="Anasayfaya git"
-            >
-              <Image
-                src={headerLogo}
-                alt="Aryap Logo"
-                className="h-8 w-auto object-contain transition-opacity duration-300 sm:h-9"
-                draggable={false}
-                priority
-                sizes="150px"
-              />
-            </Link>
+        <div className="hidden items-center gap-12 lg:flex">
+          <nav className="flex items-center gap-10">
+            {NAV_ITEMS.map((item) => {
+              const dropdownItems = DROPDOWN_ITEMS[item.label];
+              const hasDropdown = Boolean(dropdownItems);
 
-            <div className="flex h-24 items-center gap-12">
-              <nav className="flex h-full items-center gap-10">
-                {NAV_ITEMS.map(renderDesktopNavItem)}
-              </nav>
+              return (
+                <div
+                  key={item.label}
+                  className="group relative flex h-24 items-center"
+                >
+                  <Link
+                    href={item.path}
+                    className={`group/link relative flex cursor-pointer items-center gap-1.5 text-base font-medium tracking-[0.18em] transition-colors duration-300 ${headerTextColor}`}
+                  >
+                    {item.label}
 
-              {renderLanguageSelector()}
-            </div>
-          </div>
-        )}
+                    {hasDropdown && (
+                      <FiChevronDown className="text-sm transition-transform duration-300 group-hover:rotate-180" />
+                    )}
 
-        {scrolled && (
-          <div className="relative hidden h-[76px] w-full items-center lg:block">
-            <div
-              className="absolute inset-0 overflow-hidden rounded-[2rem] border border-[#0f2535]/12 bg-white/48 shadow-[0_18px_55px_rgba(15,37,53,0.10)] backdrop-blur-2xl"
-              style={{
-                clipPath:
-                  "polygon(0% 0%, 43.5% 0%, 50% 100%, 56.5% 0%, 100% 0%, 100% 100%, 0% 100%)",
-              }}
+                    <span
+                      className={`absolute -bottom-2 left-0 h-[1px] w-0 transition-[width] duration-300 group-hover/link:w-full ${underlineColor}`}
+                    />
+                  </Link>
+
+                  {hasDropdown && dropdownItems && (
+                    <div className="invisible absolute left-1/2 top-[78px] w-72 -translate-x-1/2 translate-y-4 scale-95 overflow-hidden rounded-3xl bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,37,53,0.16)] transition-[opacity,transform,visibility] duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100">
+                      <div className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white" />
+
+                      <div className="relative z-10">
+                        {dropdownItems.map((subItem) => (
+                          <Link
+                            key={subItem.label}
+                            href={subItem.path}
+                            className="group/item flex cursor-pointer items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold tracking-[0.08em] text-[#0f2535]/65 transition-[background-color,color] duration-300 hover:bg-[#0f2535] hover:text-white"
+                          >
+                            <span>{subItem.label}</span>
+                            <FiArrowUpRight className="text-base opacity-0 transition-[opacity,transform] duration-300 group-hover/item:translate-x-1 group-hover/item:-translate-y-1 group-hover/item:opacity-100" />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-7 pl-2">
+            <span
+              className={`h-5 w-px transition-colors duration-300 ${dividerColor}`}
             />
 
-            <div className="absolute inset-x-0 bottom-0 h-px bg-[#0f2535]/10" />
-
-            <div className="relative z-10 grid h-full w-full grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)] items-center px-10 xl:px-14">
-              <nav className="flex h-full items-center justify-end gap-10 pr-8 xl:gap-12 xl:pr-12">
-                {LEFT_NAV_ITEMS.map(renderDesktopNavItem)}
-              </nav>
-
-              <Link
-                href="/"
-                aria-label="Anasayfaya git"
-                className="mx-auto flex h-full w-full items-center justify-center"
+            <div className="group relative">
+              <button
+                type="button"
+                className={`flex cursor-pointer items-center gap-2 rounded-full px-1 py-2 text-sm font-semibold tracking-[0.18em] transition-colors duration-300 ${headerTextColor}`}
+                aria-label="Dil seçimi"
               >
-                <span className="flex h-[46px] w-[46px] items-center justify-center transition-transform duration-300 hover:scale-105">
-                  <Image
-                    src={AryapLogoIcon}
-                    alt="Aryap ikon"
-                    className="h-full w-full object-contain"
-                    draggable={false}
-                    priority
-                    sizes="46px"
-                  />
-                </span>
-              </Link>
+                <FiGlobe className="text-lg" />
+                <span>{selectedLang}</span>
+                <FiChevronDown className="text-base transition-transform duration-300 group-hover:rotate-180" />
+              </button>
 
-              <div className="flex h-full items-center justify-start gap-10 pl-8 xl:gap-12 xl:pl-12">
-                <nav className="flex h-full items-center gap-10 xl:gap-12">
-                  {RIGHT_NAV_ITEMS.map(renderDesktopNavItem)}
-                </nav>
-
-                {renderLanguageSelector()}
+              <div className="invisible absolute right-0 top-9 w-32 translate-y-3 overflow-hidden rounded-2xl bg-white py-2 opacity-0 shadow-[0_18px_50px_rgba(15,37,53,0.16)] transition-[opacity,transform,visibility] duration-300 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => setSelectedLang(lang)}
+                    className={`flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-sm font-semibold tracking-[0.16em] transition-colors duration-300 ${
+                      selectedLang === lang
+                        ? "text-[#0f2535]"
+                        : "text-[#0f2535]/45 hover:text-[#0f2535]"
+                    }`}
+                  >
+                    <span>{lang}</span>
+                    {selectedLang === lang && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#0f2535]" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         <button
           type="button"
