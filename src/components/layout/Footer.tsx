@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useLayoutEffect,
   useRef,
+  type MouseEventHandler,
   type ReactNode,
 } from "react";
 import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
@@ -23,6 +24,7 @@ type FooterLinkItem = {
 type LinkItemProps = {
   children: ReactNode;
   href: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 };
 
 type SectionTitleProps = {
@@ -33,8 +35,22 @@ type SectionTitleProps = {
 const footerHeadline =
   "Mekânın karakterini tasarım, üretim ve detay belirler.";
 
+/* DEĞİŞTİ: ProjectsPage filtre alanına direkt inmek için hash eklendi */
+const PROJECTS_FILTER_HASH = "projects-filter";
+
+/* DEĞİŞTİ: Aynı sayfadayken footer linkinden scroll tetiklemek için event eklendi */
+const PROJECTS_FILTER_SCROLL_EVENT = "aryapProjectsScrollToFilter";
+
+/* DEĞİŞTİ: Sayfa geçişinde scroll isteğini ProjectsPage'e taşımak için sessionStorage key eklendi */
+const PROJECTS_FILTER_STORAGE_KEY = "aryapProjectsShouldScrollToFilter";
+
+/* DEĞİŞTİ: Footer proje linkleri artık filtre hash'iyle gidiyor */
 const projectPath = (category: string) =>
-  `/projects?category=${encodeURIComponent(category)}`;
+  `/projects?category=${encodeURIComponent(category)}#${PROJECTS_FILTER_HASH}`;
+
+/* DEĞİŞTİ: Sadece proje filtre linklerini ayırt etmek için helper eklendi */
+const isProjectFilterPath = (path: string) =>
+  path.startsWith("/projects?category=");
 
 const solutionPath = (service: string) =>
   `/solutions?service=${encodeURIComponent(service)}#hizmet-alanlari`;
@@ -96,10 +112,11 @@ const solutions: FooterLinkItem[] = [
   },
 ];
 
-const LinkItem = memo(({ children, href }: LinkItemProps) => {
+const LinkItem = memo(({ children, href, onClick }: LinkItemProps) => {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className="group flex items-center justify-between gap-8 border-b border-white/10 py-4 text-sm text-white/65 transition-all duration-500 hover:border-white/35 hover:text-white"
     >
       <span className="transition-transform duration-500 group-hover:translate-x-2">
@@ -130,6 +147,17 @@ SectionTitle.displayName = "SectionTitle";
 const Footer = () => {
   const headlineBoxRef = useRef<HTMLDivElement | null>(null);
   const headlineTextRef = useRef<HTMLParagraphElement | null>(null);
+
+  /* DEĞİŞTİ: Footer'daki proje kategori linklerine tıklanınca filtre alanına scroll isteği gönderiliyor */
+  const requestProjectsFilterScroll = useCallback(() => {
+    try {
+      window.sessionStorage.setItem(PROJECTS_FILTER_STORAGE_KEY, "1");
+    } catch {
+      // sessionStorage çalışmazsa URL hash fallback olarak çalışır.
+    }
+
+    window.dispatchEvent(new Event(PROJECTS_FILTER_SCROLL_EVENT));
+  }, []);
 
   const fitHeadline = useCallback(() => {
     const box = headlineBoxRef.current;
@@ -286,7 +314,16 @@ const Footer = () => {
             <SectionTitle href="/projects">Projeler</SectionTitle>
 
             {projects.map((item) => (
-              <LinkItem key={item.label} href={item.path}>
+              <LinkItem
+                key={item.label}
+                href={item.path}
+                /* DEĞİŞTİ: Footer proje kategori linkleri filtre alanına scroll isteği gönderiyor */
+                onClick={
+                  isProjectFilterPath(item.path)
+                    ? requestProjectsFilterScroll
+                    : undefined
+                }
+              >
                 {item.label}
               </LinkItem>
             ))}

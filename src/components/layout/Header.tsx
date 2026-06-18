@@ -24,8 +24,22 @@ import AryapLogoDark from "@/assets/AryapLogo.png";
 
 const SCROLL_LIMIT = 45;
 
+/* DEĞİŞTİ: ProjectsPage filtre alanına direkt inmek için hash eklendi */
+const PROJECTS_FILTER_HASH = "projects-filter";
+
+/* DEĞİŞTİ: Aynı sayfadayken dropdown tıklamasında scroll tetiklemek için event eklendi */
+const PROJECTS_FILTER_SCROLL_EVENT = "aryapProjectsScrollToFilter";
+
+/* DEĞİŞTİ: Sayfa değişimi sırasında scroll isteğini ProjectsPage'e taşımak için sessionStorage key eklendi */
+const PROJECTS_FILTER_STORAGE_KEY = "aryapProjectsShouldScrollToFilter";
+
+/* DEĞİŞTİ: Proje dropdown linkleri artık filtre hash'iyle gidiyor */
 const projectPath = (category: string) =>
-  `/projects?category=${encodeURIComponent(category)}`;
+  `/projects?category=${encodeURIComponent(category)}#${PROJECTS_FILTER_HASH}`;
+
+/* DEĞİŞTİ: Sadece proje filtre linklerini ayırt etmek için helper eklendi */
+const isProjectFilterPath = (path: string) =>
+  path.startsWith("/projects?category=");
 
 const NAV_ITEMS = [
   { label: "Kurumsal", path: "/company" },
@@ -174,9 +188,32 @@ const Header = () => {
     };
   }, [isOpen]);
 
+  /* DEĞİŞTİ: Dropdown'dan proje kategorisine tıklanınca ProjectsPage filtre alanına scroll isteği gönderiliyor */
+  const requestProjectsFilterScroll = useCallback(() => {
+    try {
+      window.sessionStorage.setItem(PROJECTS_FILTER_STORAGE_KEY, "1");
+    } catch {
+      // sessionStorage çalışmazsa URL hash zaten fallback olarak çalışır.
+    }
+
+    window.dispatchEvent(new Event(PROJECTS_FILTER_SCROLL_EVENT));
+  }, []);
+
   const closeMobileMenu = useCallback(() => {
     setIsOpen(false);
   }, []);
+
+  /* DEĞİŞTİ: Mobil dropdown tıklamalarında hem menü kapanıyor hem filtre scroll isteği gönderiliyor */
+  const handleMobileDropdownClick = useCallback(
+    (path: string) => {
+      if (isProjectFilterPath(path)) {
+        requestProjectsFilterScroll();
+      }
+
+      closeMobileMenu();
+    },
+    [closeMobileMenu, requestProjectsFilterScroll]
+  );
 
   const isDarkMode = scrolled || darkHeader;
 
@@ -259,6 +296,12 @@ const Header = () => {
                           <Link
                             key={subItem.label}
                             href={subItem.path}
+                            /* DEĞİŞTİ: Desktop proje dropdown tıklamasında filtre alanına scroll isteği gönderiliyor */
+                            onClick={
+                              isProjectFilterPath(subItem.path)
+                                ? requestProjectsFilterScroll
+                                : undefined
+                            }
                             className="group/item flex cursor-pointer items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold tracking-[0.08em] text-[#0f2535]/65 transition-[background-color,color] duration-300 hover:bg-[#0f2535] hover:text-white"
                           >
                             <span>{subItem.label}</span>
@@ -434,7 +477,8 @@ const Header = () => {
                         <Link
                           key={subItem.label}
                           href={subItem.path}
-                          onClick={closeMobileMenu}
+                          /* DEĞİŞTİ: Mobil proje dropdown tıklamasında filtre scroll isteği gönderiliyor */
+                          onClick={() => handleMobileDropdownClick(subItem.path)}
                           className="cursor-pointer text-sm font-medium tracking-[0.08em] text-white/45 transition-colors duration-300 hover:text-white"
                         >
                           {subItem.label}

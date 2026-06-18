@@ -5,7 +5,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Aryap Ahşap & Tasarım",
-  description: "Aryap web sitesi",
+  description: "Aryap Ahşap & Tasarım Kurumsal Web Sitesi",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

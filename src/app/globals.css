@@ -49,3 +49,35 @@ body {
 .animate-dropdown {
   animation: dropdown 0.25s ease;
 }
+
+
+.aryap-values-row {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .aryap-values-row {
+    grid-template-columns: minmax(0, 0.35fr) minmax(0, 0.65fr);
+    align-items: flex-start;
+  }
+}
+
+.aryap-vision-hero-bg {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 112%;
+}
+
+@media (min-width: 640px) {
+  .aryap-vision-hero-bg {
+    background-position: center 132%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aryap-vision-hero-bg {
+    background-position: center 172%;
+    background-attachment: fixed;
+  }
+}
